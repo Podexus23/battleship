@@ -1,0 +1,21 @@
+{
+  "env": {
+    "browser": true,
+    "es6": true,
+    "jest/globals": true
+  },
+  "parser": "@babel/eslint-parser",
+  "extends": ["airbnb", "prettier", "plugin:jest/recommended"],
+  "plugins": ["prettier", "jest"],
+  "parserOptions": {
+    "requireConfigFile": false
+  },
+  "rules": {
+    "prettier/prettier": ["error", {
+      "singleQuote": true,
+      "endOfLine": "auto"
+    }],
+    "no-console": "off",
+    "func-names": ["error", "never"]
+  }
+}
