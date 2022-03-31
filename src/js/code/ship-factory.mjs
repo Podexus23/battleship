@@ -6,17 +6,16 @@ export default class Ship {
 
   buildAShip() {
     this.buildedShip = new Array(this.length);
-    this.buildedShip.fill(1);
-    this.setHP();
+    this.buildedShip.fill('1');
+    this.hp = this.buildedShip.length;
   }
 
-  hit(num) {
-    this.buildedShip[num - 1] = 0;
-    this.setHP();
+  hit() {
+    this.hp -= 1;
   }
 
-  setHP() {
-    this.hp = this.buildedShip.filter((cell) => cell === 1).length;
+  giveAName(name) {
+    this.name = name;
   }
 
   getHP() {
