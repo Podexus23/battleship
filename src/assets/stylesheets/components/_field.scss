@@ -1,0 +1,23 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+
+.wave {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+}
+
+.cell {
+  color: rgb(0, 94, 255);
+  border: 1px solid rgb(0, 0, 0);
+  font-size: 1rem;
+  width: 100%;
+  user-select: none;
+}
+
+.divide-title {
+  margin: 0;
+}

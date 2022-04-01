@@ -1,0 +1,24 @@
+.content {
+  width: 100%;
+  text-align: center;
+}
+
+.game-on {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+}
+
+
+.field {
+  width: 250px;
+  height: 250px;
+  border: 1px solid rgb(0, 0, 0);
+}
+
+.desk {
+  display: grid;
+  gap: 2rem;
+}
+
+.gameside {}

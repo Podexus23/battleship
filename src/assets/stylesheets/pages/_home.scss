@@ -1,3 +1,10 @@
 // -----------------------------------------------------------------------------
 // This file contains styles that are specific to the home page.
 // -----------------------------------------------------------------------------
+.page-wrapper {
+  display: grid;
+  height: 100vh;
+  grid-template-rows: 100px 8fr 50px;
+  align-items: center;
+  justify-items: center;
+}

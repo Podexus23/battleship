@@ -16,6 +16,7 @@
       "endOfLine": "auto"
     }],
     "no-console": "off",
-    "func-names": ["error", "never"]
+    "func-names": ["error", "never"],
+    "class-methods-use-this": "off"
   }
 }
