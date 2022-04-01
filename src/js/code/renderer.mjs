@@ -70,21 +70,19 @@ export default class Renderer {
   </div>`;
   }
 
-  renderField(field, nodeName) {
-    const nodeClass = nodeName;
-    this.removeWaves(nodeName);
-    field.forEach((wave, i) => this.renderFieldWave(wave, i, nodeClass));
+  renderField(field, node) {
+    this.removeWaves(node);
+    field.forEach((wave, i) => this.renderFieldWave(wave, i, node));
   }
 
-  renderFieldWave(wave, i, nodeClass) {
-    const playerDesk = document.querySelector(nodeClass);
+  renderFieldWave(wave, i, node) {
     const row = document.createElement('div');
     let id = `p1y${i}`;
     row.classList.add('wave');
-    if (nodeClass.includes('player')) id = `p1y${i}`;
-    if (nodeClass.includes('opponent')) id = `p2y${i}`;
+    if (node.parentNode.classList.contains('player-desk')) id = `p1y${i}`;
+    if (node.parentNode.classList.contains('opponent-desk')) id = `p2y${i}`;
     this.renderFieldCell(wave, row, id);
-    playerDesk.append(row);
+    node.append(row);
   }
 
   renderFieldCell(text, node, id) {
@@ -101,8 +99,7 @@ export default class Renderer {
     node.addEventListener(type, func);
   }
 
-  removeWaves(className) {
-    const node = document.querySelector(className);
+  removeWaves(node) {
     const waves = node.querySelectorAll('.wave');
     waves.forEach((e) => e.remove());
   }

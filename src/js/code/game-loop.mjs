@@ -4,12 +4,6 @@ export default class GameLoop {
     this.fields = fields;
     this.players = players;
     this.display = display;
-    this.fieldNames = [
-      '.player-desk .my-field',
-      '.player-desk .enemy-field',
-      '.opponent-desk .my-field',
-      '.opponent-desk .enemy-field',
-    ];
   }
 
   start() {
@@ -26,22 +20,10 @@ export default class GameLoop {
   }
 
   renderStartFields() {
-    this.display.renderField(
-      this.fields.p1[0].showField(),
-      '.player-desk .my-field'
-    );
-    this.display.renderField(
-      this.fields.p1[1].showField(),
-      '.player-desk .enemy-field'
-    );
-    this.display.renderField(
-      this.fields.p2[0].showField(),
-      '.opponent-desk .my-field'
-    );
-    this.display.renderField(
-      this.fields.p2[1].showField(),
-      '.opponent-desk .enemy-field'
-    );
+    this.display.renderField(this.fields.p1[0].showField(), this.fieldNodes[0]);
+    this.display.renderField(this.fields.p1[1].showField(), this.fieldNodes[1]);
+    this.display.renderField(this.fields.p2[0].showField(), this.fieldNodes[2]);
+    this.display.renderField(this.fields.p2[1].showField(), this.fieldNodes[3]);
   }
 
   clickOnBoard() {
@@ -50,9 +32,8 @@ export default class GameLoop {
       this.traceHit(e);
     };
 
-    this.fieldNames.forEach((elem) => {
-      const node = document.querySelector(elem);
-      this.display.addFieldListener('click', node, consoleClick);
+    this.fieldNodes.forEach((elem) => {
+      this.display.addFieldListener('click', elem, consoleClick);
     });
   }
 
@@ -77,10 +58,7 @@ export default class GameLoop {
     console.log(node.classList);
     const fieldNumber = node.classList.contains('my-field') ? 0 : 1;
     this.fields[side][fieldNumber].receiveAttack(coords);
-    this.display.renderField(
-      this.fields[side][fieldNumber].showField(),
-      node.classList.join(' ')
-    );
+    this.display.renderField(this.fields[side][fieldNumber].showField(), node);
     // receiveAttack([y, x])
     // console.log(e.target);
   }
