@@ -6,7 +6,7 @@ export default class GameLoop {
     this.display = display;
   }
 
-  start() {
+  startBasedAutoSail() {
     console.log(this);
     this.display.gameStartCondition();
     this.fieldNodes = [
@@ -17,6 +17,7 @@ export default class GameLoop {
     ];
     this.renderStartFields();
     this.clickOnBoard();
+    this.shipAutoSail();
   }
 
   renderStartFields() {
@@ -38,12 +39,6 @@ export default class GameLoop {
   }
 
   traceHit(e) {
-    /* разложить выстрел:
-    1.определить и ноду и объект поля
-    2.определить координаты.
-    3.зафиксировать выстрел в объекте.
-    4.отрендерить ноду относительно объекта.
-    */
     const node = this.fieldNodes.filter(
       (elem) => elem === e.target.parentNode.parentNode
     )[0];
@@ -53,13 +48,21 @@ export default class GameLoop {
       e.target.dataset.id.slice(2).match(re),
     ];
 
-    console.dir(node);
-    console.log(side, coords);
-    console.log(node.classList);
     const fieldNumber = node.classList.contains('my-field') ? 0 : 1;
+    console.log(fieldNumber);
     this.fields[side][fieldNumber].receiveAttack(coords);
     this.display.renderField(this.fields[side][fieldNumber].showField(), node);
-    // receiveAttack([y, x])
-    // console.log(e.target);
+  }
+
+  shipAutoSail() {
+    for (let i = 0; i < 10; i += 1) {
+      this.fields.p1[0].autoSetShip(i);
+      this.display.renderField(
+        this.fields.p1[0].showField(),
+        this.fieldNodes[0]
+      );
+    }
+    this.fields.p1[0].cleanBorder();
+    this.display.renderField(this.fields.p1[0].showField(), this.fieldNodes[0]);
   }
 }

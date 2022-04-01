@@ -1,6 +1,10 @@
 export default class Field {
   static wave = `~`;
 
+  static random(min, max) {
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
   constructor() {
     this.board = new Array(10);
     this.allSettledShips = {};
@@ -17,17 +21,19 @@ export default class Field {
     return this.board;
   }
 
+  // eslint-disable-next-line consistent-return
   setShipOnField(ship, coordinates, direction = 'hor') {
     const shipSize = ship.length;
-
     const checkCoords = this.isCoordsValid(coordinates);
     if (!checkCoords) throw new Error(`Sorry those coordinates doesn't exist`);
 
     const place = this.isEmpty(coordinates, direction, shipSize);
-    if (!place) throw new Error(`Sorry thats impossible`);
+    // if (!place) throw new Error(`Sorry thats impossible`);
+    if (!place) return this.autoSetShip();
 
     this.addShipToList(ship);
-
+    // eslint-disable-next-line no-param-reassign
+    ship.settled = true;
     if (direction === 'hor') {
       this.setHorizontally(coordinates, shipSize, ship.name);
     }
@@ -49,13 +55,13 @@ export default class Field {
   isEmpty([x, y], dir, size) {
     if (dir === 'hor') {
       for (let i = y; i < y + size; i += 1) {
-        if (i > 10) return false;
+        if (i >= 10) return false;
         if (this.board[x][i] !== Field.wave) return false;
       }
     }
     if (dir === 'vert') {
       for (let i = x; i < x + size; i += 1) {
-        if (i > 10) return false;
+        if (i >= 10) return false;
         if (this.board[i][y] !== Field.wave) return false;
       }
     }
@@ -252,12 +258,17 @@ export default class Field {
   }
 
   receiveAttack([y, x]) {
-    const hitPlace = this.board[y][x];
-    const shipRe = /^[\d]+s?$/;
-    if (this.board[y][x].search(shipRe) !== -1) {
-      this.allSettledShips[hitPlace].hit();
+    try {
+      const hitPlace = this.board[y][x];
+      const shipRe = /^[\d]+s?$/;
+      if (hitPlace.includes('h')) throw Error('Already hit');
+      if (this.board[y][x].search(shipRe) !== -1) {
+        this.allSettledShips[hitPlace].hit();
+      }
+      this.board[y][x] += 'h';
+    } catch (e) {
+      console.warn(e);
     }
-    this.board[y][x] += 'h';
   }
 
   shipsOnBoard() {
@@ -269,12 +280,34 @@ export default class Field {
 
   addShipToList(ship) {
     const names = Object.keys(this.allSettledShips);
-    let newName = '1';
+    let newName = '0';
 
     if (this.allSettledShips[`${newName}s`]) {
       newName = parseInt(names[names.length - 1], 10) + 1;
     }
     ship.giveAName(`${newName}s`);
     this.allSettledShips[`${newName}s`] = ship;
+  }
+
+  autoSetShip() {
+    const lastedShips = this.ships.filter((ship) => ship.settled !== true);
+    const [coords, side, index] = [
+      [Field.random(0, 10), Field.random(0, 9)],
+      Field.random(0, 2),
+      Field.random(0, lastedShips.length),
+    ];
+    const direction = side > 0 ? 'hor' : 'vert';
+    this.setShipOnField(lastedShips[index], coords, direction);
+  }
+
+  cleanBorder() {
+    const array = this.board
+      .flat()
+      .map((elem) => (elem === 'b' ? Field.wave : elem));
+    const spliced = [];
+    while (array.length) {
+      spliced.push(array.splice(0, 10));
+    }
+    this.board = spliced;
   }
 }

@@ -34,8 +34,10 @@ function addFleetToField(gameField) {
 Object.values(fields).flat().forEach(addFleetToField);
 
 function startGame() {
-  admin.start();
+  admin.startBasedAutoSail();
 }
+// renderer.makeMainPage();
+// startGame();
 
 function loadMainPAge() {
   renderer.makeMainPage();
