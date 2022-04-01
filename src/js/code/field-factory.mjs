@@ -4,8 +4,13 @@ export default class Field {
   constructor() {
     this.board = new Array(10);
     this.allSettledShips = {};
+    // for each wave making array of waves
     this.board.fill(Field.wave);
     this.board = this.board.map(() => [...this.board]);
+  }
+
+  addShips(ships) {
+    this.ships = ships;
   }
 
   showField() {

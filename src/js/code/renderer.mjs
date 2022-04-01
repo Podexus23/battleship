@@ -4,13 +4,13 @@ export default class Renderer {
   }
 
   makeMainPage() {
-    this.wrapper = document.createElement('div');
-    this.wrapper.classList.add('page-wrapper');
-    document.body.append(this.wrapper);
+    const wrapper = document.createElement('div');
+    wrapper.classList.add('page-wrapper');
+    document.body.append(wrapper);
 
-    this.wrapper.append(this.makeHeader());
-    this.wrapper.append(this.makeContent());
-    this.wrapper.append(this.makeFooter());
+    wrapper.append(this.makeHeader());
+    wrapper.append(this.makeContent());
+    wrapper.append(this.makeFooter());
   }
 
   makeHeader() {
@@ -72,6 +72,7 @@ export default class Renderer {
 
   renderField(field, nodeName) {
     const nodeClass = nodeName;
+    this.removeWaves(nodeName);
     field.forEach((wave, i) => this.renderFieldWave(wave, i, nodeClass));
   }
 
@@ -94,5 +95,15 @@ export default class Renderer {
       div.textContent = cell;
       node.append(div);
     });
+  }
+
+  addFieldListener(type, node, func) {
+    node.addEventListener(type, func);
+  }
+
+  removeWaves(className) {
+    const node = document.querySelector(className);
+    const waves = node.querySelectorAll('.wave');
+    waves.forEach((e) => e.remove());
   }
 }
