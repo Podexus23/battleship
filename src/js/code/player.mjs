@@ -1,16 +1,29 @@
 export default class Player {
-  constructor(name, player) {
-    this.name = name;
+  constructor(player) {
     this.player = player;
-    if (this.player !== 'human') {
-      this.makeCoords();
-    }
+    this.makeCoords();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  makeAMove(gameboard, coords) {
-    if (this.player === 'human') gameboard.receiveAttack(coords);
-    else gameboard.receiveAttack(...this.takeRandomCoords());
+  makeAMove(gameboard, display, node) {
+    const coords = this.takeRandomCoords();
+
+    if (gameboard.hitPlaceCheck(...coords).includes('h' || 'b')) {
+      console.log('hit again');
+      setTimeout(this.makeAMove(gameboard, display, node), 500);
+    } else if (gameboard.hitPlaceCheck(...coords).includes('s')) {
+      console.log('good shot, make one more');
+      gameboard.receiveAttack(...coords);
+
+      setTimeout(() => {
+        display.renderField(gameboard.showField(), node);
+        this.makeAMove(gameboard, display, node);
+      }, 500);
+    } else {
+      gameboard.receiveAttack(...coords);
+      setTimeout(() => {
+        display.renderField(gameboard.showField(), node);
+      }, 1000);
+    }
   }
 
   takeRandomCoords() {
@@ -22,7 +35,6 @@ export default class Player {
       ...this.botCoords.slice(0, randomNumber),
       ...this.botCoords.slice(randomNumber + 1),
     ];
-    console.log('shot:', thatAShot);
     return thatAShot;
   }
 
@@ -34,5 +46,23 @@ export default class Player {
         return newRow;
       })
       .flat();
+  }
+
+  playerMove(field, coords) {
+    if (field.hitPlaceCheck(coords).includes('h' || 'b')) {
+      console.log('hit again');
+      return false;
+    }
+    if (field.hitPlaceCheck(coords).includes('s')) {
+      console.log('good shot, make one more');
+      field.receiveAttack(coords);
+      return false;
+    }
+    field.receiveAttack(coords);
+    return true;
+  }
+
+  botMove(field, display, node) {
+    this.makeAMove(field, display, node);
   }
 }

@@ -258,8 +258,8 @@ export default class Field {
   }
 
   receiveAttack([y, x]) {
+    const hitPlace = this.board[y][x];
     try {
-      const hitPlace = this.board[y][x];
       const shipRe = /^[\d]+s?$/;
       if (hitPlace.includes('h')) throw Error('Already hit');
       if (this.board[y][x].search(shipRe) !== -1) {
@@ -309,5 +309,9 @@ export default class Field {
       spliced.push(array.splice(0, 10));
     }
     this.board = spliced;
+  }
+
+  hitPlaceCheck([y, x]) {
+    return this.board[y][x];
   }
 }

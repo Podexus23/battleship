@@ -11,58 +11,63 @@ export default class GameLoop {
     this.display.gameStartCondition();
     this.fieldNodes = [
       document.querySelector('.player-desk .my-field'),
-      document.querySelector('.player-desk .enemy-field'),
       document.querySelector('.opponent-desk .my-field'),
-      document.querySelector('.opponent-desk .enemy-field'),
     ];
-    this.renderStartFields();
-    this.clickOnBoard();
+    this.loadStartFields();
     this.shipAutoSail();
   }
 
-  renderStartFields() {
-    this.display.renderField(this.fields.p1[0].showField(), this.fieldNodes[0]);
-    this.display.renderField(this.fields.p1[1].showField(), this.fieldNodes[1]);
-    this.display.renderField(this.fields.p2[0].showField(), this.fieldNodes[2]);
-    this.display.renderField(this.fields.p2[1].showField(), this.fieldNodes[3]);
-  }
+  loadStartFields() {
+    this.display.renderField(this.fields.p1.showField(), this.fieldNodes[0]);
+    this.display.renderField(this.fields.p2.showField(), this.fieldNodes[1]);
 
-  clickOnBoard() {
-    const consoleClick = (e) => {
-      if (!e.target.classList.contains('cell')) return;
-      this.traceHit(e);
-    };
+    const gameBoard = document.querySelector('.opponent-desk');
 
-    this.fieldNodes.forEach((elem) => {
-      this.display.addFieldListener('click', elem, consoleClick);
-    });
-  }
-
-  traceHit(e) {
-    const node = this.fieldNodes.filter(
-      (elem) => elem === e.target.parentNode.parentNode
-    )[0];
-    const re = /[\d]/g;
-    const [side, coords] = [
-      e.target.dataset.id.slice(0, 2),
-      e.target.dataset.id.slice(2).match(re),
-    ];
-
-    const fieldNumber = node.classList.contains('my-field') ? 0 : 1;
-    console.log(fieldNumber);
-    this.fields[side][fieldNumber].receiveAttack(coords);
-    this.display.renderField(this.fields[side][fieldNumber].showField(), node);
+    gameBoard.addEventListener('click', this.gameCycle.bind(this));
   }
 
   shipAutoSail() {
     for (let i = 0; i < 10; i += 1) {
-      this.fields.p1[0].autoSetShip(i);
-      this.display.renderField(
-        this.fields.p1[0].showField(),
-        this.fieldNodes[0]
-      );
+      this.fields.p1.autoSetShip(i);
+      this.display.renderField(this.fields.p1.showField(), this.fieldNodes[0]);
     }
-    this.fields.p1[0].cleanBorder();
-    this.display.renderField(this.fields.p1[0].showField(), this.fieldNodes[0]);
+    for (let i = 0; i < 10; i += 1) {
+      this.fields.p2.autoSetShip(i);
+      this.display.renderField(this.fields.p2.showField(), this.fieldNodes[1]);
+    }
+    this.fields.p1.cleanBorder();
+    this.display.renderField(this.fields.p1.showField(), this.fieldNodes[0]);
+
+    this.fields.p2.cleanBorder();
+    this.display.renderField(this.fields.p2.showField(), this.fieldNodes[1]);
+  }
+
+  gameCycle(e) {
+    if (!e.target.classList.contains('cell')) return;
+
+    this.whoIsMoving(e);
+  }
+
+  whoIsMoving(e) {
+    let canBotMove = false;
+    const playerNode = this.fieldNodes[0];
+    const botNode = this.fieldNodes[1];
+    const re = /[\d]/g;
+    const coords = e.target.dataset.id.slice(2).match(re);
+    canBotMove = this.players[0].playerMove(this.fields.p2, coords);
+    this.display.renderField(this.fields.p2.showField(), botNode);
+
+    if (canBotMove) {
+      this.players[1].botMove(this.fields.p1, this.display, playerNode);
+      canBotMove = false;
+    }
+    this.checkWinCondition();
+  }
+
+  checkWinCondition() {
+    const play = this.fields.p1.ships.filter((elem) => elem.settled);
+    if (play.length === 0) console.log('bot won the game');
+    const bot = this.fields.p2.ships.filter((elem) => elem.settled);
+    if (bot.length === 0) console.log('i won the game');
   }
 }

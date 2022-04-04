@@ -55,16 +55,12 @@ export default class Renderer {
       <h3 class="player-title">You</h3>
       <div class="player-desk desk">
         <div class="my-field field"></div>
-        <h3 class="divide-title">Enemy sea</h3>
-        <div class="enemy-field field"></div>
       </div>
     </div>
     <div class="gameside opponent">
       <h3 class="opponent-title">Opponent(not you)</h3>
       <div class="opponent-desk desk">
         <div class="my-field field"></div>
-        <h3 class="divide-title">Enemy sea</h3>
-        <div class="enemy-field field"></div>
       </div>
     </div>
   </div>`;
@@ -90,13 +86,12 @@ export default class Renderer {
       const div = document.createElement('div');
       div.classList.add('cell');
       div.dataset.id = `${id}x${i}`;
+      if (cell.includes('h')) {
+        div.style.backgroundColor = '#000000';
+      }
       div.textContent = cell;
       node.append(div);
     });
-  }
-
-  addFieldListener(type, node, func) {
-    node.addEventListener(type, func);
   }
 
   removeWaves(node) {

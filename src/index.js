@@ -10,8 +10,8 @@ import RenderMachine from './js/code/renderer.mjs';
 const icons = Sprite;
 const renderer = new RenderMachine(icons);
 const fields = {
-  p1: [new Field(), new Field()],
-  p2: [new Field(), new Field()],
+  p1: new Field(),
+  p2: new Field(),
 };
 
 const party = [new Player('human'), new Player('machine')];

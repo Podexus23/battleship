@@ -12,6 +12,7 @@ export default class Ship {
 
   hit() {
     this.hp -= 1;
+    if (this.hp === 0) this.isSunk();
   }
 
   giveAName(name) {
@@ -23,6 +24,6 @@ export default class Ship {
   }
 
   isSunk() {
-    return this.hp === 0;
+    this.settled = false;
   }
 }
